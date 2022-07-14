@@ -5,11 +5,6 @@ import { readFile } from 'fs/promises';
 import { dirname, join } from 'path';
 import { parse } from 'yaml';
 import { AppModule } from './app.module';
-import { User } from './users/interfaces/user.intarface';
-
-// export const musicLib: { user: User[] } = {
-//   user: [],
-// };
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
