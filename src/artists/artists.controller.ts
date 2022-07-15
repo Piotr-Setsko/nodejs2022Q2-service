@@ -39,9 +39,9 @@ export class ArtistsController {
   @Put(':id')
   async updateArtist(
     @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
-    @Body() updatePasswordDto: UpdateArtistDto,
+    @Body() updateAlbumDto: UpdateArtistDto,
   ): Promise<Artist> {
-    return this.artistService.updateArtist(id, updatePasswordDto);
+    return this.artistService.updateArtist(id, updateAlbumDto);
   }
 
   @Delete(':id')

@@ -6,17 +6,18 @@ import {
 import { CreateUserDto, UpdatePasswordDto } from './dto/users.dto';
 import { User } from './interfaces/user.intarface';
 import { v4 as uuidv4 } from 'uuid';
+import { InMemoryDB } from 'src/db';
 
 @Injectable()
 export class UsersService {
-  private users: User[] = [];
+  constructor(private inMemoryDB: InMemoryDB) {}
 
   async getUsers(): Promise<User[]> {
-    return this.users;
+    return this.inMemoryDB.users;
   }
 
   async getUser(id): Promise<User> {
-    const user = this.users.find((item) => item.id === id);
+    const user = this.inMemoryDB.users.find((item) => item.id === id);
 
     if (!user) {
       throw new NotFoundException();
@@ -33,7 +34,7 @@ export class UsersService {
       createdAt: new Date().getTime(),
       updatedAt: new Date().getTime(),
     };
-    this.users.push(newUser);
+    this.inMemoryDB.users.push(newUser);
 
     return newUser;
   }
@@ -42,7 +43,7 @@ export class UsersService {
     id: string,
     updatePasswordDto: UpdatePasswordDto,
   ): Promise<User> {
-    const user = this.users.find((item) => item.id === id);
+    const user = this.inMemoryDB.users.find((item) => item.id === id);
 
     if (!user) {
       throw new NotFoundException();
@@ -60,13 +61,15 @@ export class UsersService {
   }
 
   async deleteUser(id: string) {
-    const user = this.users.find((item) => item.id === id);
+    const user = this.inMemoryDB.users.find((item) => item.id === id);
 
     if (!user) {
       throw new NotFoundException();
     }
 
-    this.users = this.users.filter((item) => !(item.id === id));
+    this.inMemoryDB.users = this.inMemoryDB.users.filter(
+      (item) => !(item.id === id),
+    );
 
     return;
   }

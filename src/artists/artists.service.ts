@@ -2,17 +2,18 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateArtistDto, UpdateArtistDto } from './dto/artists.dto';
 import { Artist } from './interfaces/artist.interface';
 import { v4 as uuidv4 } from 'uuid';
+import { InMemoryDB } from 'src/db';
 
 @Injectable()
 export class ArtistsService {
-  private artists: Artist[] = [];
+  constructor(private inMemoryDB: InMemoryDB) {}
 
   async getArtists(): Promise<Artist[]> {
-    return this.artists;
+    return this.inMemoryDB.artists;
   }
 
   async getArtist(id): Promise<Artist> {
-    const artist = this.artists.find((item) => item.id === id);
+    const artist = this.inMemoryDB.artists.find((item) => item.id === id);
 
     if (!artist) {
       throw new NotFoundException();
@@ -26,35 +27,37 @@ export class ArtistsService {
       ...createArtistDto,
       id: uuidv4(),
     };
-    this.artists.push(newArtist);
+    this.inMemoryDB.artists.push(newArtist);
 
     return newArtist;
   }
 
   async updateArtist(
     id: string,
-    updatePasswordDto: UpdateArtistDto,
+    updateArtistDto: UpdateArtistDto,
   ): Promise<Artist> {
-    const artist = this.artists.find((item) => item.id === id);
+    const artist = this.inMemoryDB.artists.find((item) => item.id === id);
 
     if (!artist) {
       throw new NotFoundException();
     }
 
-    artist.name = updatePasswordDto.name;
-    artist.grammy = updatePasswordDto.grammy;
+    artist.name = updateArtistDto.name;
+    artist.grammy = updateArtistDto.grammy;
 
     return artist;
   }
 
   async deleteArtist(id: string) {
-    const artist = this.artists.find((item) => item.id === id);
+    const artist = this.inMemoryDB.artists.find((item) => item.id === id);
 
     if (!artist) {
       throw new NotFoundException();
     }
 
-    this.artists = this.artists.filter((item) => !(item.id === id));
+    this.inMemoryDB.artists = this.inMemoryDB.artists.filter(
+      (item) => !(item.id === id),
+    );
 
     return;
   }
