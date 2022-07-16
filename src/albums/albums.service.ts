@@ -26,6 +26,7 @@ export class AlbumsService {
     const newAlbum = {
       ...createAlbumDto,
       id: uuidv4(),
+      artistId: createAlbumDto?.artistId || null,
     };
     this.inMemoryDB.albums.push(newAlbum);
 
@@ -44,7 +45,7 @@ export class AlbumsService {
 
     album.name = updateAlbumDto.name;
     album.year = updateAlbumDto.year;
-    album.artistId = updateAlbumDto.artistId;
+    album.artistId = updateAlbumDto?.artistId || null;
 
     return album;
   }
@@ -55,6 +56,16 @@ export class AlbumsService {
     if (!album) {
       throw new NotFoundException();
     }
+
+    this.inMemoryDB.tracks = this.inMemoryDB.tracks.map((item) => {
+      const result = item.albumId === id ? { ...item, albumId: null } : item;
+
+      return result;
+    });
+
+    this.inMemoryDB.favorites.albums = this.inMemoryDB.favorites.albums.filter(
+      (item) => !(item.id === id),
+    );
 
     this.inMemoryDB.albums = this.inMemoryDB.albums.filter(
       (item) => !(item.id === id),

@@ -15,7 +15,6 @@ import { TracksService } from './tracks.service';
 
 @Controller('track')
 export class TracksController {
-  albumService: any;
   constructor(private readonly trackService: TracksService) {}
 
   @Get()

@@ -55,6 +55,21 @@ export class ArtistsService {
       throw new NotFoundException();
     }
 
+    this.inMemoryDB.tracks = this.inMemoryDB.tracks.map((item) => {
+      const result = item.artistId === id ? { ...item, artistId: null } : item;
+
+      return result;
+    });
+
+    this.inMemoryDB.albums = this.inMemoryDB.albums.map((item) => {
+      const result = item.artistId === id ? { ...item, artistId: null } : item;
+
+      return result;
+    });
+
+    this.inMemoryDB.favorites.artists =
+      this.inMemoryDB.favorites.artists.filter((item) => !(item.id === id));
+
     this.inMemoryDB.artists = this.inMemoryDB.artists.filter(
       (item) => !(item.id === id),
     );

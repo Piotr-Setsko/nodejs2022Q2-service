@@ -59,6 +59,10 @@ export class TracksService {
       throw new NotFoundException();
     }
 
+    this.inMemoryDB.favorites.tracks = this.inMemoryDB.favorites.tracks.filter(
+      (item) => !(item.id === id),
+    );
+
     this.inMemoryDB.tracks = this.inMemoryDB.tracks.filter(
       (item) => !(item.id === id),
     );

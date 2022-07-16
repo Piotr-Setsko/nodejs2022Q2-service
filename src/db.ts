@@ -1,12 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import { Album } from './albums/interfaces/album.interface';
 import { Artist } from './artists/interfaces/artist.interface';
+import { FavoritesRepsonse } from './favorites/interfaces/favorite.interface';
 import { Track } from './tracks/interfaces/track.interface';
 import { User } from './users/interfaces/user.intarface';
 
 @Injectable()
 export class InMemoryDB {
-  favorites = {
+  favorites: FavoritesRepsonse = {
     artists: [],
     albums: [],
     tracks: [],
@@ -22,6 +23,6 @@ export class InMemoryDB {
       InMemoryDB.instance = this;
     }
     // return InMemoryDB.instance;
-    Object.assign(this, InMemoryDB.instance);
+    return InMemoryDB.instance;
   }
 }
