@@ -54,7 +54,7 @@ export class UsersController {
   @HttpCode(204)
   async deleteUser(
     @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
-  ): Promise<void> {
+  ): Promise<string> {
     return this.userService.deleteUser(id);
   }
 }

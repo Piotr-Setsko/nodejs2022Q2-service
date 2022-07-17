@@ -48,7 +48,7 @@ export class ArtistsService {
     return artist;
   }
 
-  async deleteArtist(id: string) {
+  async deleteArtist(id: string): Promise<string> {
     const artist = this.inMemoryDB.artists.find((item) => item.id === id);
 
     if (!artist) {
@@ -74,6 +74,6 @@ export class ArtistsService {
       (item) => !(item.id === id),
     );
 
-    return;
+    return 'Artist was successfully deleted';
   }
 }

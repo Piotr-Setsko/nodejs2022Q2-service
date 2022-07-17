@@ -8,6 +8,7 @@ import { FavoritesRepsonse } from './interfaces/favorite.interface';
 @Injectable()
 export class FavoritesService {
   constructor(private inMemoryDB: InMemoryDB) {}
+  message = `was successfully deleted`;
 
   async getFavorites(): Promise<FavoritesRepsonse> {
     return this.inMemoryDB.favorites;
@@ -20,7 +21,9 @@ export class FavoritesService {
       throw new UnprocessableEntityException();
     }
 
-    this.inMemoryDB.favorites.tracks.push(track);
+    if (!this.inMemoryDB.favorites.tracks.find((item) => item.id === id)) {
+      this.inMemoryDB.favorites.tracks.push(track);
+    }
 
     return track;
   }
@@ -32,7 +35,9 @@ export class FavoritesService {
       throw new UnprocessableEntityException();
     }
 
-    this.inMemoryDB.favorites.albums.push(album);
+    if (!this.inMemoryDB.favorites.albums.find((item) => item.id === id)) {
+      this.inMemoryDB.favorites.albums.push(album);
+    }
 
     return album;
   }
@@ -44,12 +49,14 @@ export class FavoritesService {
       throw new UnprocessableEntityException();
     }
 
-    this.inMemoryDB.favorites.artists.push(artist);
+    if (!this.inMemoryDB.favorites.artists.find((item) => item.id === id)) {
+      this.inMemoryDB.favorites.artists.push(artist);
+    }
 
     return artist;
   }
 
-  async deleteTrack(id: string): Promise<void> {
+  async deleteTrack(id: string): Promise<string> {
     const track = this.inMemoryDB.favorites.tracks.find(
       (item) => item.id === id,
     );
@@ -62,10 +69,10 @@ export class FavoritesService {
       (item) => !(item.id === id),
     );
 
-    return;
+    return `Favorite track ${this.message}`;
   }
 
-  async deleteAlbum(id: string): Promise<void> {
+  async deleteAlbum(id: string): Promise<string> {
     const album = this.inMemoryDB.favorites.albums.find(
       (item) => item.id === id,
     );
@@ -78,10 +85,10 @@ export class FavoritesService {
       (item) => !(item.id === id),
     );
 
-    return;
+    return `Favorite album ${this.message}`;
   }
 
-  async deleteArtist(id: string): Promise<void> {
+  async deleteArtist(id: string): Promise<string> {
     const artist = this.inMemoryDB.artists.find((item) => item.id === id);
 
     if (!artist) {
@@ -91,6 +98,6 @@ export class FavoritesService {
     this.inMemoryDB.favorites.artists =
       this.inMemoryDB.favorites.artists.filter((item) => !(item.id === id));
 
-    return;
+    return `Favorite artist ${this.message}`;
   }
 }

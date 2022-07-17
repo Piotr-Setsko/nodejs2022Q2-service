@@ -52,7 +52,7 @@ export class TracksService {
     return track;
   }
 
-  async deleteTrack(id: string) {
+  async deleteTrack(id: string): Promise<string> {
     const track = this.inMemoryDB.tracks.find((item) => item.id === id);
 
     if (!track) {
@@ -67,6 +67,6 @@ export class TracksService {
       (item) => !(item.id === id),
     );
 
-    return;
+    return 'Track was successfully deleted';
   }
 }
