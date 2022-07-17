@@ -50,7 +50,7 @@ export class AlbumsService {
     return album;
   }
 
-  async deleteAlbum(id: string): Promise<string> {
+  async deleteAlbum(id: string): Promise<void> {
     const album = this.inMemoryDB.albums.find((item) => item.id === id);
 
     if (!album) {
@@ -71,6 +71,6 @@ export class AlbumsService {
       (item) => !(item.id === id),
     );
 
-    return 'Album was successfully deleted';
+    return;
   }
 }

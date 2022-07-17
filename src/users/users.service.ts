@@ -60,7 +60,7 @@ export class UsersService {
     return user;
   }
 
-  async deleteUser(id: string): Promise<string> {
+  async deleteUser(id: string): Promise<void> {
     const user = this.inMemoryDB.users.find((item) => item.id === id);
 
     if (!user) {
@@ -71,6 +71,6 @@ export class UsersService {
       (item) => !(item.id === id),
     );
 
-    return 'User was successfully deleted';
+    return;
   }
 }

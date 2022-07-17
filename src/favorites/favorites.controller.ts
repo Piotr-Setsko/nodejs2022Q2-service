@@ -47,7 +47,7 @@ export class FavoritesController {
   @HttpCode(204)
   async deleteTrack(
     @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
-  ): Promise<string> {
+  ): Promise<void> {
     return this.favoriteService.deleteTrack(id);
   }
 
@@ -55,7 +55,7 @@ export class FavoritesController {
   @HttpCode(204)
   async deleteAlbum(
     @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
-  ): Promise<string> {
+  ): Promise<void> {
     return this.favoriteService.deleteAlbum(id);
   }
 
@@ -63,7 +63,7 @@ export class FavoritesController {
   @HttpCode(204)
   async deleteArtist(
     @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
-  ): Promise<string> {
+  ): Promise<void> {
     return this.favoriteService.deleteArtist(id);
   }
 }

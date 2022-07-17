@@ -8,7 +8,6 @@ import { FavoritesRepsonse } from './interfaces/favorite.interface';
 @Injectable()
 export class FavoritesService {
   constructor(private inMemoryDB: InMemoryDB) {}
-  message = `was successfully deleted`;
 
   async getFavorites(): Promise<FavoritesRepsonse> {
     return this.inMemoryDB.favorites;
@@ -56,7 +55,7 @@ export class FavoritesService {
     return artist;
   }
 
-  async deleteTrack(id: string): Promise<string> {
+  async deleteTrack(id: string): Promise<void> {
     const track = this.inMemoryDB.favorites.tracks.find(
       (item) => item.id === id,
     );
@@ -69,10 +68,10 @@ export class FavoritesService {
       (item) => !(item.id === id),
     );
 
-    return `Favorite track ${this.message}`;
+    return;
   }
 
-  async deleteAlbum(id: string): Promise<string> {
+  async deleteAlbum(id: string): Promise<void> {
     const album = this.inMemoryDB.favorites.albums.find(
       (item) => item.id === id,
     );
@@ -85,10 +84,10 @@ export class FavoritesService {
       (item) => !(item.id === id),
     );
 
-    return `Favorite album ${this.message}`;
+    return;
   }
 
-  async deleteArtist(id: string): Promise<string> {
+  async deleteArtist(id: string): Promise<void> {
     const artist = this.inMemoryDB.artists.find((item) => item.id === id);
 
     if (!artist) {
@@ -98,6 +97,6 @@ export class FavoritesService {
     this.inMemoryDB.favorites.artists =
       this.inMemoryDB.favorites.artists.filter((item) => !(item.id === id));
 
-    return `Favorite artist ${this.message}`;
+    return;
   }
 }
