@@ -17,7 +17,9 @@ git clone {repository URL}
 npm install
 ```
 
-## Copy and rename env.example to .env
+## Set PORT value
+
+Copy and rename env.example to .env
 
 ## Running application
 
