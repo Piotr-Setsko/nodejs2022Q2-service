@@ -1,0 +1,40 @@
+version: '3.4'
+services:
+  api:
+    image: piotrsetsko/api
+    build: 
+      dockerfile: Dockerfile
+      context: .
+    restart: unless-stopped
+    networks:
+      - node_postgres_network
+    ports: 
+      - ${PORT}:${PORT}
+    depends_on:
+      - postgres
+    env_file:
+      - .env
+    volumes:
+      - ./:/app/
+      - api:/app/node_modules
+
+  postgres: 
+    image: piotrsetsko/db
+    build: ./database/
+    restart: unless-stopped
+    networks:
+      - node_postgres_network
+    ports: 
+      - ${POSTGRES_PORT}:${POSTGRES_PORT}
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DATABASE=${POSTGRES_DATABASE}
+    volumes:
+      - database:/var/lib/postgresql/data
+volumes:
+  api:
+  database:
+networks:
+  node_postgres_network:
+    driver: bridge
