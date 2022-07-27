@@ -1,19 +1,22 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateArtistDto, UpdateArtistDto } from './dto/artists.dto';
-import { Artist } from './interfaces/artist.interface';
-import { v4 as uuidv4 } from 'uuid';
-import { InMemoryDB } from 'src/db';
+import { ArtistEntity } from './entities/artist.entity';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class ArtistsService {
-  constructor(private inMemoryDB: InMemoryDB) {}
+  constructor(
+    @InjectRepository(ArtistEntity)
+    private artistRepository: Repository<ArtistEntity>,
+  ) { }
 
-  async getArtists(): Promise<Artist[]> {
-    return this.inMemoryDB.artists;
+  async getArtists(): Promise<ArtistEntity[]> {
+    return await this.artistRepository.find();
   }
 
-  async getArtist(id): Promise<Artist> {
-    const artist = this.inMemoryDB.artists.find((item) => item.id === id);
+  async getArtist(id: string): Promise<ArtistEntity> {
+    const artist = await this.artistRepository.findOne({ where: { id: id } });
 
     if (!artist) {
       throw new NotFoundException();
@@ -22,57 +25,50 @@ export class ArtistsService {
     return artist;
   }
 
-  async createArtist(createArtistDto: CreateArtistDto): Promise<Artist> {
-    const newArtist = {
-      ...createArtistDto,
-      id: uuidv4(),
-    };
-    this.inMemoryDB.artists.push(newArtist);
+  async createArtist(createArtistDto: CreateArtistDto): Promise<ArtistEntity> {
+    await this.artistRepository.create(createArtistDto);
 
-    return newArtist;
+    return await this.artistRepository.save(createArtistDto);
   }
 
   async updateArtist(
     id: string,
     updateArtistDto: UpdateArtistDto,
-  ): Promise<Artist> {
-    const artist = this.inMemoryDB.artists.find((item) => item.id === id);
+  ): Promise<ArtistEntity> {
+    const artist = await this.artistRepository.findOne({ where: { id } });
 
     if (!artist) {
       throw new NotFoundException();
     }
 
-    artist.name = updateArtistDto.name;
-    artist.grammy = updateArtistDto.grammy;
+    await this.artistRepository.update({ id }, updateArtistDto);
 
-    return artist;
+    return await this.artistRepository.findOne({ where: { id } });
   }
 
   async deleteArtist(id: string): Promise<void> {
-    const artist = this.inMemoryDB.artists.find((item) => item.id === id);
+    const artist = await this.artistRepository.findOneBy({ id: id });
 
     if (!artist) {
       throw new NotFoundException();
     }
 
-    this.inMemoryDB.tracks = this.inMemoryDB.tracks.map((item) => {
-      const result = item.artistId === id ? { ...item, artistId: null } : item;
+    // this.inMemoryDB.tracks = this.inMemoryDB.tracks.map((item) => {
+    //   const result = item.artistId === id ? { ...item, artistId: null } : item;
 
-      return result;
-    });
+    //   return result;
+    // });
 
-    this.inMemoryDB.albums = this.inMemoryDB.albums.map((item) => {
-      const result = item.artistId === id ? { ...item, artistId: null } : item;
+    // this.inMemoryDB.albums = this.inMemoryDB.albums.map((item) => {
+    //   const result = item.artistId === id ? { ...item, artistId: null } : item;
 
-      return result;
-    });
+    //   return result;
+    // });
 
-    this.inMemoryDB.favorites.artists =
-      this.inMemoryDB.favorites.artists.filter((item) => !(item.id === id));
+    // this.inMemoryDB.favorites.artists =
+    //   this.inMemoryDB.favorites.artists.filter((item) => !(item.id === id));
 
-    this.inMemoryDB.artists = this.inMemoryDB.artists.filter(
-      (item) => !(item.id === id),
-    );
+    await this.artistRepository.delete({ id });
 
     return;
   }
