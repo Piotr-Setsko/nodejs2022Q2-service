@@ -1,75 +1,70 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateAlbumDto, UpdateAlbumDto } from './dto/albums.dto';
 import { Album } from './interfaces/album.interface';
-import { v4 as uuidv4 } from 'uuid';
-import { InMemoryDB } from 'src/db';
+import { InjectRepository } from '@nestjs/typeorm';
+import { AlbumEntity } from './entities/album.entity';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class AlbumsService {
-  constructor(private inMemoryDB: InMemoryDB) {}
+  constructor(
+    @InjectRepository(AlbumEntity)
+    private albumRepository: Repository<AlbumEntity>,
+  ) {}
 
   async getAlbums(): Promise<Album[]> {
-    return this.inMemoryDB.albums;
+    return await this.albumRepository.find();
   }
 
   async getAlbum(id): Promise<Album> {
-    const albums = this.inMemoryDB.albums.find((item) => item.id === id);
+    const album = await this.albumRepository.findOneBy({ id: id });
 
-    if (!albums) {
+    if (!album) {
       throw new NotFoundException();
     }
 
-    return albums;
+    return album;
   }
 
   async createAlbum(createAlbumDto: CreateAlbumDto): Promise<Album> {
-    const newAlbum = {
-      ...createAlbumDto,
-      id: uuidv4(),
-      artistId: createAlbumDto?.artistId || null,
-    };
-    this.inMemoryDB.albums.push(newAlbum);
+    await this.albumRepository.create(createAlbumDto);
 
-    return newAlbum;
+    return await this.albumRepository.save(createAlbumDto);
   }
 
   async updateAlbum(
     id: string,
     updateAlbumDto: UpdateAlbumDto,
   ): Promise<Album> {
-    const album = this.inMemoryDB.albums.find((item) => item.id === id);
+    const album = await this.albumRepository.findOneBy({ id: id });
 
     if (!album) {
       throw new NotFoundException();
     }
 
-    album.name = updateAlbumDto.name;
-    album.year = updateAlbumDto.year;
-    album.artistId = updateAlbumDto?.artistId || null;
+    await this.albumRepository.update({ id }, updateAlbumDto);
 
-    return album;
+    return await this.albumRepository.findOneBy({ id: id });
   }
 
   async deleteAlbum(id: string): Promise<void> {
-    const album = this.inMemoryDB.albums.find((item) => item.id === id);
+    const album = await this.albumRepository.findOneBy({ id: id });
 
     if (!album) {
       throw new NotFoundException();
     }
 
-    this.inMemoryDB.tracks = this.inMemoryDB.tracks.map((item) => {
-      const result = item.albumId === id ? { ...item, albumId: null } : item;
+    // this.inMemoryDB.tracks = this.inMemoryDB.tracks.map((item) => {
+    //   const result = item.albumId === id ? { ...item, albumId: null } : item;
 
-      return result;
-    });
+    //   return result;
+    // });
 
-    this.inMemoryDB.favorites.albums = this.inMemoryDB.favorites.albums.filter(
-      (item) => !(item.id === id),
-    );
+    // this.inMemoryDB.favorites.albums = this.inMemoryDB.favorites.albums.filter(
+    //   (item) => !(item.id === id),
+    // );
 
-    this.inMemoryDB.albums = this.inMemoryDB.albums.filter(
-      (item) => !(item.id === id),
-    );
+    await this.albumRepository.delete({ id });
 
     return;
   }
