@@ -1,7 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateTrackDto, UpdateTrackDto } from './dto/tracks.dto';
 import { Track } from './interfaces/track.interface';
-import { v4 as uuidv4 } from 'uuid';
 import { InjectRepository } from '@nestjs/typeorm';
 import { TrackEntity } from './entities/track.entity';
 import { Repository } from 'typeorm';
