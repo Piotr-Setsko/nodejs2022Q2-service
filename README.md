@@ -11,6 +11,32 @@
 git clone {repository URL}
 ```
 
+## Docker
+
+Build images 
+
+```
+docker-compose build
+```
+
+Create and start containers
+
+```
+docker-compose up
+```
+
+Stop services
+
+```
+docker-compose stop
+```
+
+Vulnerabilities scanning
+
+```
+npm run scan
+```
+
 ## Installing NPM modules
 
 ```
@@ -74,3 +100,5 @@ npm run format
 Press <kbd>F5</kbd> to debug.
 
 For more information, visit: https://code.visualstudio.com/docs/editor/debugging
+
+
