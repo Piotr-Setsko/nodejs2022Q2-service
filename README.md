@@ -19,7 +19,7 @@ Build images
 docker-compose build
 ```
 
-Create and start containers
+Or you can pull images, create and start containers
 
 ```
 docker-compose up
