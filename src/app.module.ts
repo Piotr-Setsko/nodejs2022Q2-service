@@ -1,9 +1,35 @@
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { ArtistsModule } from './artists/artists.module';
+import { UsersModule } from './users/users.module';
+import { AlbumsModule } from './albums/albums.module';
+import { TracksModule } from './tracks/tracks.module';
+import { FavoritesModule } from './favorites/favorites.module';
+import { ConfigModule } from '@nestjs/config';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { UserEntity } from './users/entities/user.entity';
 
 @Module({
-  imports: [],
+  imports: [
+    UsersModule,
+    ArtistsModule,
+    AlbumsModule,
+    TracksModule,
+    FavoritesModule,
+    ConfigModule.forRoot(),
+    TypeOrmModule.forRoot({
+      type: 'postgres',
+      host: 'postgres',
+      port: +process.env.POSTGRES_PORT as number,
+      username: process.env.POSTGRES_USER as string,
+      password: process.env.POSTGRES_PASSWORD as string,
+      database: process.env.POSTGRES_DB as string,
+      entities: [UserEntity],
+      synchronize: true,
+      retryAttempts: 10,
+    }),
+  ],
   controllers: [AppController],
   providers: [AppService],
 })
