@@ -17,7 +17,7 @@ services:
     volumes:
       - ./:/app/
       - api:/app/node_modules
-
+    command: ['npm', 'run', start:dev]
   postgres: 
     image: piotrsetsko/db
     build: ./database/
